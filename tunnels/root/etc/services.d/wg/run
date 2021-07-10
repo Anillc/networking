@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+for file in `ls /etc/wireguard`; do
+  echo "starting tunnel" $file
+  wg-quick up /etc/wireguard/$file
+done
+
+sleep infinity & \
+wait

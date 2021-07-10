@@ -1,0 +1,50 @@
+version: '2'
+services:
+  abird-dn42-roa:
+    image: anillc/abird-dn42-roa
+    volumes:
+    - dn42roa:/bird/
+    networks:
+    - dn42roa
+  abird-tunnels:
+    build: ./tunnels
+    ports:
+    - 10000-10050:10000-10050/udp
+#    - 20000-29999:20000-29999/udp
+    networks:
+    - abird
+    devices:
+    - /dev/net/tun:/dev/net/tun
+    cap_add:
+    - NET_ADMIN
+    - SYS_MODULE
+    sysctls:
+    - net.ipv6.conf.all.disable_ipv6=0
+  abird:
+    image: anillc/abird
+    ports:
+    - 8000:8000
+    - 179:179
+    volumes:
+    - /var/aconfig:/config/
+    - dn42roa:/etc/bird/dn42roa/
+    networks:
+    - abird
+    cap_add:
+    - NET_ADMIN
+    sysctls:
+    - net.ipv6.conf.all.disable_ipv6=0
+    depends_on:
+    - abird-dn42-roa
+networks:
+  abird:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+      - subnet: fc00:2526::/32
+        gateway: fc00:2526::1
+  dn42roa:
+    driver: bridge
+volumes:
+  dn42roa: {}
