@@ -5,5 +5,4 @@ for file in `ls /etc/wireguard`; do
   wg-quick up /etc/wireguard/$file
 done
 
-sleep infinity & \
-wait
+sleep infinity

@@ -1,1 +1,2 @@
 tunnels/root/etc/wireguard/*.conf
+tunnels/wg/*.conf
