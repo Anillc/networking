@@ -9,6 +9,10 @@ services:
   abird-tunnels:
     build: ./tunnels
     ports:
+# abird ports
+    - 8080:8080
+    - 179:179
+# tunnel ports
     - 10000-10050:10000-10050/udp
 #    - 20000-29999:20000-29999/udp
     networks:
@@ -22,20 +26,17 @@ services:
     - net.ipv6.conf.all.disable_ipv6=0
   abird:
     image: anillc/abird
-    ports:
-    - 8000:8000
-    - 179:179
     volumes:
     - /var/aconfig:/config/
     - dn42roa:/etc/bird/dn42roa/
-    networks:
-    - abird
+    network_mode: service:abird-tunnels
     cap_add:
     - NET_ADMIN
     sysctls:
     - net.ipv6.conf.all.disable_ipv6=0
     depends_on:
     - abird-dn42-roa
+    - abird-tunnels
 networks:
   abird:
     driver: bridge
